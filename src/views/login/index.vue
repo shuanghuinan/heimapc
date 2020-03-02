@@ -36,18 +36,25 @@ export default {
 
 <style lang='less' scoped>
     .login{
-        background-image:url('../../assets/img/back.png');
-        background-size: cover;
         height: 100vh;
         display:flex;
         justify-content: center;
         align-items: center;
+        &:before{
+            content: '';
+            background-image:url('../../assets/img/back.png');
+            background-size: cover;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
         .login-card{
+            z-index: 2;
             width: 440px;
             height: 330px;
             padding:5px;
             // box-sizing: border-box;
-            background-color: rgba(255, 255, 255,0.3);
+            background-color: rgba(0, 0,0,0);
             box-shadow: 6px 6px 6px -6px rgba(250, 112, 0, 0.705);
             .title{
                 text-align: center;
