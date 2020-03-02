@@ -29,7 +29,7 @@
 </template>
 
 <script>
-// 表单检验分为两个步骤:
+// ---------------表单检验分为两个步骤:
 // 表单检验的步骤:自动校验(检验单个表单数据)  和  手动校验(提交整个表单时校验整个表单数据)
 // 自动校验
 //    1.定义两对数据:一个表示表单数据,一个表示校验规则
@@ -50,6 +50,9 @@
 //            this.$refs.名.validate.then().catch()
 //            this.$refs.名.validate(回调)     回调有两个参数,第一个表示校验通过,第二个表示校验失败
 
+// ---------------表单检验完之后要进行手机号验证码的检验(发送axios请求)
+// 若正确的话, 1.将token令牌保存在本地   2.进行页面的跳转(编程式导航 this.$router.方式)
+// 若错误的话, 弹出提示信息
 export default {
   data () {
     return {
@@ -74,9 +77,26 @@ export default {
   methods: {
     login () {
       this.$refs.loginForm.validate().then(() => {
-        console.log('校验成功')
+        // console.log('校验成功')
+        // 校验格式正确后,还需发请求看手机号和验证码是否正确
+        this.$axios({
+          url: '/authorizations',
+          data: this.loginForm,
+          method: 'POST'
+        }).then((res) => {
+          // console.log(res)
+          // 手机号和验证码正确的话,需要将token令牌保存到本地localstorage中
+          window.localStorage.setItem('user-token', res.data.data.token)
+          // 并进行页面的跳转
+          this.$router.push('/home')
+        }).catch(() => {
+          // 手机号或验证码错误的话,弹出错误提示信息
+          this.$message.error('您的手机号或者验证码输入错误,请重新输入')
+        })
       }).catch(() => {
-        console.log('校验失败')
+        // console.log('校验失败')
+        // 表单校验失败的话,弹出的提示信息
+        this.$message.error('您的手机号格式或验证码格式错误,请重新输入')
       })
     }
   }
