@@ -18,15 +18,15 @@
         <!-- 头像 -->
         <img :src="this.userInfo.photo" alt />
         <!-- 下拉菜单 -->
-        <el-dropdown trigger="click">
+        <el-dropdown trigger="click" @command="clickMenu">
           <span class="el-dropdown-link">
             {{userInfo.name}}
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>个人信息</el-dropdown-item>
-            <el-dropdown-item>github地址</el-dropdown-item>
-            <el-dropdown-item>退出</el-dropdown-item>
+            <el-dropdown-item command="info">个人信息</el-dropdown-item>
+            <el-dropdown-item command="git">github地址</el-dropdown-item>
+            <el-dropdown-item command="exit">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-row>
@@ -39,6 +39,23 @@ export default {
   data () {
     return {
       userInfo: ''
+    }
+  },
+  methods: {
+    // 下拉菜单的点击事件
+    clickMenu (command) {
+      // 如果点的是info
+      if (command === 'info') {
+        //
+      } else if (command === 'git') {
+        // 如果点的是git,则跳转到github地址
+        // alert(11)
+        window.location.href = 'https://github.com/shuanghuinan/heimapc'
+      } else {
+        // 如果点击的是exit,则代表退出,要删除token令牌,并进行页面的跳转
+        window.localStorage.removeItem('user-token')
+        this.$router.push('/login')
+      }
     }
   },
   created () {

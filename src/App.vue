@@ -1,4 +1,4 @@
-<template>
+<template v-clock>
   <div id="app">
 
     <router-view/>
@@ -6,5 +6,7 @@
 </template>
 
 <style lang="less">
-
+[v-clock]{
+  display: none
+}
 </style>
