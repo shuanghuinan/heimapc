@@ -61,5 +61,8 @@ export default {
                 height: 35px;
             }
         }
+        .el-menu{
+            border:none
+        }
     }
 </style>
