@@ -16,18 +16,17 @@
       <!-- 因为要为右侧设置对齐样式,所以再放一个el-row标签 -->
       <el-row type="flex" align="middle" justify="end">
         <!-- 头像 -->
-        <img src="../../assets/img/reply.png" alt />
+        <img :src="this.userInfo.photo" alt />
         <!-- 下拉菜单 -->
         <el-dropdown trigger="click">
           <span class="el-dropdown-link">
-            慢慢
+            {{userInfo.name}}
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>個人信息</el-dropdown-item>
+            <el-dropdown-item>个人信息</el-dropdown-item>
             <el-dropdown-item>github地址</el-dropdown-item>
             <el-dropdown-item>退出</el-dropdown-item>
-
           </el-dropdown-menu>
         </el-dropdown>
       </el-row>
@@ -36,7 +35,28 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {
+      userInfo: ''
+    }
+  },
+  created () {
+    const token = localStorage.getItem('user-token') // 从兜里拿钥匙 也就是从缓存中取token
+
+    // 在页面渲染完以后查询头部的个人信息(头像, 名字), 并显示在主页
+    // 请求体参数是Bearer+空格+令牌
+    this.$axios({
+      url: '/user/profile',
+      headers: {
+        Authorization: `Bearer ${token}` // 格式要求 Bearer +token
+      }
+    }).then(res => {
+      console.log(res)
+      this.userInfo = res.data.data
+    })
+  }
+}
 </script>
 
 <style lang='less' scoped>
@@ -53,11 +73,11 @@ export default {}
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      margin: 0 5px
+      margin: 0 5px;
     }
   }
 }
-.el-dropdown-link{
-    cursor: pointer;
+.el-dropdown-link {
+  cursor: pointer;
 }
 </style>
