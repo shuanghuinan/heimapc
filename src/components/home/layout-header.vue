@@ -69,7 +69,7 @@ export default {
       //   Authorization: `Bearer ${token}` // 格式要求 Bearer +token
       // }
     }).then(res => {
-      console.log(res)
+      // console.log(res)
       this.userInfo = res.data
     })
   }

@@ -8,7 +8,7 @@
     <!-- 右面整体 -->
     <el-container>
       <!-- 右上 -->
-      <el-header style="padding:0">
+      <el-header>
         <layout-header></layout-header>
       </el-header>
       <!-- 右下 -->

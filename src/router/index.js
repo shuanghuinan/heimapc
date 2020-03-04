@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '@/views/home'
-import Login from '@/views/login'
-import SecondHome from '@/views/home/second_home'
+import Home from '@/views/home' // 引入主页组件
+import Login from '@/views/login' // 引入登录页面组件
+import SecondHome from '@/views/home/second_home' // 引入主页的默认显示组件
 Vue.use(VueRouter)
 
 const routes = [
@@ -21,7 +21,8 @@ const routes = [
     component: Home,
     children: [
       // 二级路由为空时,表示二级路由的默认组件  eg:
-      { path: '', component: SecondHome }
+      { path: '', component: SecondHome },
+      { path: 'comment', component: () => import('@/views/comment') } // 引入评论组件,按需加载
     ]
   }
 
