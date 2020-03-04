@@ -2,18 +2,17 @@
   <!-- 整个大容器 -->
   <el-container>
     <!-- 左侧边栏 -->
-    <el-aside>
+    <el-aside style="width:230px">
       <layout-aside></layout-aside>
     </el-aside>
     <!-- 右面整体 -->
     <el-container>
       <!-- 右上 -->
-      <el-header>
+      <el-header style="padding:0">
         <layout-header></layout-header>
       </el-header>
       <!-- 右下 -->
-      <el-main>
-        下
+      <el-main style="padding:0">
         <router-view></router-view>
       </el-main>
     </el-container>

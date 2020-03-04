@@ -86,7 +86,7 @@ export default {
         }).then((res) => {
           // console.log(res)
           // 手机号和验证码正确的话,需要将token令牌保存到本地localstorage中
-          window.localStorage.setItem('user-token', res.data.data.token)
+          window.localStorage.setItem('user-token', res.data.token)
           // 并进行页面的跳转
           this.$router.push('/home')
         }).catch(() => {

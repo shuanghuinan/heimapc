@@ -59,18 +59,18 @@ export default {
     }
   },
   created () {
-    const token = localStorage.getItem('user-token') // 从兜里拿钥匙 也就是从缓存中取token
+    // const token = localStorage.getItem('user-token') // 从兜里拿钥匙 也就是从缓存中取token
 
     // 在页面渲染完以后查询头部的个人信息(头像, 名字), 并显示在主页
     // 请求体参数是Bearer+空格+令牌
     this.$axios({
-      url: '/user/profile',
-      headers: {
-        Authorization: `Bearer ${token}` // 格式要求 Bearer +token
-      }
+      url: '/user/profile'
+      // headers: {
+      //   Authorization: `Bearer ${token}` // 格式要求 Bearer +token
+      // }
     }).then(res => {
       console.log(res)
-      this.userInfo = res.data.data
+      this.userInfo = res.data
     })
   }
 }
@@ -79,7 +79,7 @@ export default {
 <style lang='less' scoped>
 .layout-header {
   height: 60px;
-  // background-color: #F8F2DC;
+  // background-color: (62, 90, 116);
   .left {
     i {
       font-size: 20px;
