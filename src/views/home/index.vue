@@ -23,6 +23,8 @@
 
 </script>
 
-<style>
-
+<style lang='less' scoped>
+.el-aside{
+  background-color: #0d1740;
+}
 </style>

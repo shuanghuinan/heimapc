@@ -24,8 +24,11 @@ axios.interceptors.response.use(function (response) {
 //   console.log(error.response.status)
   // 如果响应失败qie状态码为401,则代表永远忽认证失败/用户身份不对,即拿错令牌或者令牌失效
   // 这时,我们要做的是:删除令牌,跳到登录页
-  window.localStorage.removeItem('user-token')
-  router.push('/login')
+  if (error.response.status === 401) {
+    window.localStorage.removeItem('user-token')
+    router.push('/login')
+  }
+
   return Promise.reject(error)
 })
 export default axios
