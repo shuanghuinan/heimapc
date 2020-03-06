@@ -105,19 +105,23 @@ export default {
 
 <style lang='less' scoped>
     .login{
+      position: relative;
         height: 100vh;
         display:flex;
         justify-content: center;
         align-items: center;
         &:before{
             content: '';
-            background-image:url('../../assets/img/timg.png');
+            background-image:url('../../assets/img/014fc05986c009a8012156035abd38.gif');
             background-size: cover;
             width: 100%;
             height: 100%;
             position: absolute;
         }
         .login-card{
+            position:absolute;
+            top:85px;
+            right:85px;
             z-index: 2;
             width: 440px;
             height: 330px;
