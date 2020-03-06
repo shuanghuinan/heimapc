@@ -5,7 +5,7 @@
       <template slot="title">评论列表</template>
     </bread-crumb>
     <!-- 评论列表 -->
-    <el-table :data="list" stripe>
+    <el-table :data="list" stripe v-loading='loading'>
       <el-table-column prop="title" label="标题" width="400"></el-table-column>
       <!-- 从后台取回来的评论状态是布尔值,但table-column中不能对布尔值进行显示,所以就要用table-column的formatter属性来格式化内容 -->
       <el-table-column prop="comment_status" label="评论状态" :formatter="formatterBool" align="center"></el-table-column>
@@ -41,19 +41,25 @@
 export default {
   data () {
     return {
+
       // 评论列表的数据
       list: [],
+
       // 页码的信息
       page: {
-        total_count: 100, // 默认评论总数是0
+        total_count: 0, // 默认评论总数是0
         page: 1, // 默认当前页是第一页
         per_page: 10 // 默认一页显示十条
-      }
+      },
+
+      // 加载中的状态,默认为false
+      loading: false
     }
   },
   methods: {
     // 这个方法用来获取评论列表的数据
     getComment () {
+      this.loading = true
       this.$axios({
         url: '/articles',
         params: {
@@ -69,6 +75,7 @@ export default {
         // this.page.total_count = res.data.total_count
         // this.page.curpage = res.data.page
         // this.page.per_page = res.data.per_page
+        this.loading = false
       })
     },
 
