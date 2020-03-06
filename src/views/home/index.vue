@@ -13,6 +13,7 @@
       </el-header>
       <!-- 右下 -->
       <el-main style="padding:0">
+        <!-- 二级路由容器 -->
         <router-view></router-view>
       </el-main>
     </el-container>

@@ -1,7 +1,13 @@
 // 在这个文件内进行与axios有关的配置
 import axios from 'axios'
 import router from '@/router'
+import JsonBig from 'json-bigint'// 引入json-bigint,用来处理大数字
+
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'// 配置公共的请求头
+// 解决大数字问题
+axios.defaults.transformResponse = [function (data) {
+  return data ? JsonBig.parse(data) : {}
+}]
 
 // 设置axios的请求拦截器
 axios.interceptors.request.use(function (config) {

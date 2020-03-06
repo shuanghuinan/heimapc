@@ -1,7 +1,7 @@
 <template>
-    <div>
-    <bread-crumb>
-        <span slot="title">评论列表</span>
+    <el-card>
+    <bread-crumb slot="header">
+        <template slot="title">评论列表</template>
     </bread-crumb>
     <el-table :data="list" stripe>
         <el-table-column prop="title" label='标题' width="400"></el-table-column>
@@ -19,7 +19,7 @@
         </el-table-column>
 
     </el-table>
-    </div>
+    </el-card>
 </template>
 
 <script>
@@ -30,6 +30,7 @@ export default {
     }
   },
   methods: {
+    // 这个方法用来显示评论列表
     getComment () {
       this.$axios({
         url: '/articles',
@@ -42,11 +43,13 @@ export default {
         this.list = res.data.results
       })
     },
+    // 这个方法用来将el-table-column 的布尔值显示
     formatterBool (row, column, cellValue, index) {
       //  row 代表当前的一行数   column 代表当前的列信息  cellValue 代表当前单元格的值   index 代表当前的索引
       // 该函数需要返回一个值 用来显示
       return cellValue ? '正常' : '关闭'
     },
+    // 这个方法用来决定打开/关闭评论
     // 这里的参数row是上面传过来的,代表的是每行的数据
     OpenOrClose (row) {
       const message = row.comment_status ? '关闭' : '打开'
@@ -55,7 +58,7 @@ export default {
         this.$axios({
           url: '/comments/status',
           params: {
-            article_id: row.id
+            article_id: row.id.toString()
           },
           data: {
             allow_comment: !row.comment_status
