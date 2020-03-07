@@ -15,8 +15,8 @@
       <!-- 全部 -->
       <el-tab-pane label="全部" name="all">
         <div class="card_list">
-          <el-card class="list-item" v-for="item in list" :key="item.id">
-            <img :src="item.url" alt />
+          <el-card class="list-item" v-for="(item,index) in list" :key="item.id">
+            <img :src="item.url" @click="showTell(index)">
             <el-row class="operate" type="flex" justify="center" align="middle">
               <i
                 class="el-icon-star-on"
@@ -32,12 +32,23 @@
       <!-- 收藏 -->
       <el-tab-pane label="收藏" name="collect">
         <div class="card_list">
-          <el-card class="list-item" v-for="item in list" :key="item.id">
-            <img :src="item.url" alt />
+          <el-card class="list-item" v-for="(item,index) in list" :key="item.id">
+            <img :src="item.url" @click="showTell(index)">
           </el-card>
         </div>
       </el-tab-pane>
     </el-tabs>
+
+    <!-- 点击图片素材时弹出的对话框 -->
+    <el-dialog :visible='isShow' @close="isShow = false" @opened='openEnd()'>
+        <!-- 在对话框中放置走马灯 -->
+        <el-carousel ref="myCarousel" indicator-position="outside" height="400px">
+            <el-carousel-item class="carousel-item" v-for='item in list' :key="item.id">
+                <img :src="item.url" alt="">
+            </el-carousel-item>
+        </el-carousel>
+    </el-dialog>
+
     <!-- 分页 -->
     <el-row type="flex" align="middle" justify="center" class="page">
       <el-pagination
@@ -64,7 +75,9 @@ export default {
         page: 1, // 当前页数,默认是1
         per_page: 3 // 每页显示条数,默认8条
       },
-      loading: false// 用来表示是否在加载中
+      loading: false, // 用来表示是否在加载中
+      isShow: false, // 用来控制点击图片素材弹出的对话框是否显示
+      curIndex: -1// 记录当前点击的图片的索引
     }
   },
   methods: {
@@ -146,8 +159,18 @@ export default {
           this.$message.error('删除失败')
         })
       })
-    }
+    },
 
+    // 此方法用来控制点击素材时对话框的显示,要将当前点击的图片的索引记录下来
+    showTell (index) {
+      this.curIndex = index
+      this.isShow = true
+    },
+
+    // 此方法用来解决el-dialog的懒加载
+    openEnd () {
+      this.$refs.myCarousel.setActiveItem(this.curIndex)
+    }
   },
   created () {
     this.getMaterial()
@@ -192,6 +215,13 @@ export default {
 
   .page {
     margin-top: 50px;
+  }
+  .carousel-item{
+    img{
+      height: 100%;
+      // width: 100%;
+      margin-left:200px
+    }
   }
 }
 </style>
