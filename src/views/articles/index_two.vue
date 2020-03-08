@@ -38,7 +38,7 @@
     </el-form>
 
     <!-- 页面主体结构 -->
-    <el-card class="body">
+    <el-card class="body" v-loading='loading'>
       <el-row align="middle">
         共找到
         <span class="total-num">{{page.total_count}}</span>条符合条件的内容
@@ -64,6 +64,10 @@
           </span>
         </div>
       </div>
+      <!-- 分页 -->
+      <el-row type="flex" align="middle" justify="center" style="height:60px">
+        <el-pagination @current-change='changePage' :total="page.total_count" :current-page="page.page" :page-size="page.per_page" class="pagination" background layout="prev, pager, next" ></el-pagination>
+      </el-row>
     </el-card>
   </el-card>
 </template>
@@ -82,12 +86,14 @@ export default {
       list: [], // 用来接收文章信息
       //   defaultImg: require('http://b-ssl.duitang.com/uploads/item/201509/26/20150926000727_aWhtR.thumb.224_0.jpeg')
       defaultImg: require('../../assets/img/article_default_Img.gif'),
+      // 用来存放文章的页码信息,eg:一共有多少文章,第几页
       page: {
         total_count: 0, // 表示一共有多少条数据,
         page: 1, // 表示当前页码
-        per_page: 1// 表示一页多少条数据
-      } // 用来存放文章的页码信息,eg:一共有多少文章,第几页
-
+        per_page: 1 // 表示一页多少条数据
+      },
+      // 用来表示加载中状态,默认为false
+      loading: false
     }
   },
   watch: {
@@ -95,6 +101,8 @@ export default {
     FromData: {
       deep: true,
       handler () {
+        // 只要筛选条件一变化,就将当前页置一
+        this.page.page = 1
         // 当FromData中的数据发生变化时,执行这个事件(筛选条件的改变事件)
         this.changeCondition()
       }
@@ -122,7 +130,7 @@ export default {
           return 'warning' // 草稿 警告
         case 1:
           return 'info' // 待审核
-        case 2 :
+        case 2:
           return '' // 已发表
         case 3:
           return 'danger' // 失败 错误
@@ -141,25 +149,35 @@ export default {
     },
     // 此方法用来获取文章信息
     getArticles (params) {
+      this.loading = true
       this.$axios({
         url: '/articles',
         params: params
-      }).then((res) => {
+      }).then(res => {
         console.log(res)
         this.list = res.data.results
         this.page = res.data
+        this.loading = false
       })
     },
 
-    // 此方法用来监听表单筛选条件的改变
+    // 此方法用来为表单筛选条件的改变以及和分页组件的页码的变化===为请求传参(换句话说,就是用来传他俩的参数的)
     changeCondition () {
       const params = {
         status: this.FromData.status === 5 ? null : this.FromData.status,
         channel_id: this.FromData.channel_id,
         begin_pubdate: this.FromData.dataRange.length ? this.FromData.dataRange[0] : null,
-        end_pubdate: this.FromData.dataRange.length > 1 ? this.FromData.dataRange[1] : null
+        end_pubdate: this.FromData.dataRange.length > 1 ? this.FromData.dataRange[1] : null,
+        page: this.page.page,
+        per_page: this.page.per_page
       }
       this.getArticles(params)
+    },
+
+    // 此方法用来监听分页组件的页码变化
+    changePage (newPage) {
+      this.page.page = newPage
+      this.changeCondition()
     }
   },
   created () {
