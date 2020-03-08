@@ -5,7 +5,7 @@
         <template slot="title">发布文章</template>
       </bread-crumb>
       <!-- 表单 -->
-      <el-form class="MyForm"  v-bind:model="FormData" v-bind:rules="FormRules">
+      <el-form ref="MyForm" class="MyForm"  v-bind:model="FormData" v-bind:rules="FormRules">
           <!-- 标题 -->
           <el-form-item label="标题：" prop="title">
               <el-input placeholder="请输入您的标题" style="width:60%" v-model="FormData.title"></el-input>
@@ -31,7 +31,7 @@
           </el-form-item>
           <!-- 两个按钮 -->
           <el-form-item class="btns">
-              <el-button type="primary">发表</el-button>
+              <el-button type="primary" @click="publish">发表</el-button>
               <el-button>存入草稿</el-button>
           </el-form-item>
       </el-form>
@@ -70,7 +70,7 @@ export default {
         // console.log(res)
         this.channels = res.data.channels
       })
-    }
+    },
     // // 发表文章
     // publishArticle () {
     //   this.$axios({
@@ -78,6 +78,16 @@ export default {
 
     //   })
     // }
+
+    // 此方法用来手动校验规则
+    publish () {
+      this.$refs.MyForm.validate().then(() => {
+        // 手动检验成功后,要进行文章的发表或存入草稿
+        // alert(1)
+      }).catch(() => {
+        this.$message.error('文章发表失败')
+      })
+    }
   },
   created () {
     this.getChannels()
