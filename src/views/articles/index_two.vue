@@ -163,12 +163,17 @@ export default {
     },
 
     // 此方法用来为表单筛选条件的改变以及和分页组件的页码的变化===为请求传参(换句话说,就是用来传他俩的参数的)
+    // 什么时候用:当筛选条件发生改变后,分页页码发生改变后,删除某条文章后-------总之,需要重新加载数据的时候,就要用它
+    // 为什么需要重新加载页面的时候就要用它呢?  因为它里面承载着发axios请求时的参数
     changeCondition () {
       const params = {
+        // 当单选按钮的状态码为5的时候,将其置空,因为接口中并没有status=5,5是我们为了让他显示而捏造出来的
         status: this.FromData.status === 5 ? null : this.FromData.status,
         channel_id: this.FromData.channel_id,
+        // 当日期数组存在且有长度时,索引为0的是起始时间
         begin_pubdate: this.FromData.dataRange && this.FromData.dataRange.length ? this.FromData.dataRange[0] : null,
-        end_pubdate: this.FromData.dataRange.length > 1 ? this.FromData.dataRange[1] : null,
+        // 当日期数组存在且有长度大于1时,索引为1的是结束时间
+        end_pubdate: this.FromData.dataRange && this.FromData.dataRange.length > 1 ? this.FromData.dataRange[1] : null,
         page: this.page.page,
         per_page: this.page.per_page
       }
