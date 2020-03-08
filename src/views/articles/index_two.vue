@@ -166,7 +166,7 @@ export default {
       const params = {
         status: this.FromData.status === 5 ? null : this.FromData.status,
         channel_id: this.FromData.channel_id,
-        begin_pubdate: this.FromData.dataRange.length ? this.FromData.dataRange[0] : null,
+        begin_pubdate: this.FromData.dataRange && this.FromData.dataRange.length ? this.FromData.dataRange[0] : null,
         end_pubdate: this.FromData.dataRange.length > 1 ? this.FromData.dataRange[1] : null,
         page: this.page.page,
         per_page: this.page.per_page

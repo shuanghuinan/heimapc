@@ -9,7 +9,7 @@
     <el-form class="form">
       <!-- 单选框组,文章状态 -->
       <el-form-item label="文章状态：">
-        <el-radio-group v-model="FromData.status" @change="changeCondition">
+        <el-radio-group v-model="FromData.status" @change="changeCondition();changes()">
           <el-radio :label="5">全部</el-radio>
           <el-radio :label="0">草稿</el-radio>
           <el-radio :label="1">待审核</el-radio>
@@ -19,7 +19,7 @@
       </el-form-item>
       <!-- select选择框,频道选择 -->
       <el-form-item label="频道类型：">
-        <el-select v-model="FromData.channel_id" @change="changeCondition" placeholder="请选择频道">
+        <el-select v-model="FromData.channel_id" @change="changeCondition();changes()" placeholder="请选择频道">
           <el-option v-for="item in channels" :label="item.name" :value="item.id" :key="item.id"></el-option>
         </el-select>
       </el-form-item>
@@ -28,8 +28,8 @@
         <!-- <span>{{FromData.dataRange}}</span> -->
         <el-date-picker
           v-model="FromData.dataRange"
-          @change="changeCondition"
-          type="daterange"
+          @change="changeCondition();changes()"
+          type='daterange'
           value-format="yyyy-MM-dd"
           range-separator="至"
           start-placeholder="开始日期"
@@ -39,7 +39,7 @@
     </el-form>
 
     <!-- 页面主体结构 -->
-    <el-card class="body">
+    <el-card class="body" v-loading='loading'>
       <el-row align="middle">
         共找到
         <span class="total-num">{{page.total_count}}</span>条符合条件的内容
@@ -65,6 +65,10 @@
           </span>
         </div>
       </div>
+       <!-- 分页 -->
+      <el-row type="flex" align="middle" justify="center" style="height:60px">
+        <el-pagination @current-change='changePage' :total="page.total_count" :current-page="page.page" :page-size="page.per_page" class="pagination" background layout="prev, pager, next" ></el-pagination>
+      </el-row>
     </el-card>
   </el-card>
 </template>
@@ -86,9 +90,9 @@ export default {
       page: {
         total_count: 0, // 表示一共有多少条数据,
         page: 1, // 表示当前页码
-        per_page: 1// 表示一页多少条数据
-      } // 用来存放文章的页码信息,eg:一共有多少文章,第几页
-
+        per_page: 1 // 表示一页多少条数据
+      }, // 用来存放文章的页码信息,eg:一共有多少文章,第几页
+      loading: false
     }
   },
   filters: {
@@ -113,7 +117,7 @@ export default {
           return 'warning' // 草稿 警告
         case 1:
           return 'info' // 待审核
-        case 2 :
+        case 2:
           return '' // 已发表
         case 3:
           return 'danger' // 失败 错误
@@ -130,27 +134,48 @@ export default {
         this.channels = res.data.channels
       })
     },
+
     // 此方法用来获取文章信息
     getArticles (params) {
+      this.loading = true
       this.$axios({
         url: '/articles',
         params: params
-      }).then((res) => {
+      }).then(res => {
         console.log(res)
         this.list = res.data.results
         this.page = res.data
+        this.loading = false
       })
     },
 
     // 此方法用来监听表单筛选条件的改变
     changeCondition () {
       const params = {
+        // 当单选按钮的状态码为5的时候,将其置空,因为接口中并没有status=5,5是我们为了让他显示而捏造出来的
         status: this.FromData.status === 5 ? null : this.FromData.status,
         channel_id: this.FromData.channel_id,
-        begin_pubdate: this.FromData.dataRange.length ? this.FromData.dataRange[0] : null,
-        end_pubdate: this.FromData.dataRange.length > 1 ? this.FromData.dataRange[1] : null
+        // 当日期数组存在且有长度时,索引为0的是起始时间
+        begin_pubdate: this.FromData.dataRange && this.FromData.dataRange.length ? this.FromData.dataRange[0] : null,
+        // 当日期数组存在且有长度大于1时,索引为1的是结束时间
+        end_pubdate: this.FromData.dataRange && this.FromData.dataRange.length > 1 ? this.FromData.dataRange[1] : null,
+        page: this.page.page,
+        per_page: this.page.per_page
       }
       this.getArticles(params)
+    },
+
+    // 此方法用来绑定分页页码的变化
+    changePage (newPage) {
+      this.page.page = newPage
+      this.changeCondition()
+    },
+
+    // 此方法作用:当表单域发生变化时,将分页的当前页码置一
+    changes () {
+      this.page.page = 1
+      this.changeCondition()
+      // alert(1)
     }
   },
   created () {
