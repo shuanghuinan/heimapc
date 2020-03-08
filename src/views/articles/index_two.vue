@@ -60,8 +60,8 @@
           <span>
             <i class="el-icon-edit"></i>编辑
           </span>
-          <span>
-            <i class="el-icon-delete"></i>删除
+          <span @click="delArticles(item.id)">
+            <i class="el-icon-delete" ></i>删除
           </span>
         </div>
       </div>
@@ -179,6 +179,21 @@ export default {
     changePage (newPage) {
       this.page.page = newPage
       this.changeCondition()
+    },
+
+    // 此方法用来删除文章
+    delArticles (id) {
+      // alert(id)
+      this.$confirm('您确定要进行删除操作吗,删除后将无法恢复', '友情提示').then(() => {
+        this.$axios({
+          method: 'DELETE',
+          url: `/articles/${id}`
+        }).then(() => {
+          this.changeCondition()
+        }).catch((res) => {
+          this.$message.error('已发表状态的文章不能被删除')
+        })
+      })
     }
   },
   created () {
