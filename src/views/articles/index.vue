@@ -9,8 +9,8 @@
     <el-form class="form">
       <!-- 单选框组,文章状态 -->
       <el-form-item label="文章状态：">
-        <el-radio-group v-model="FromData.status">
-          <el-radio :label="4">全部</el-radio>
+        <el-radio-group v-model="FromData.status" @change="changeCondition">
+          <el-radio :label="5">全部</el-radio>
           <el-radio :label="0">草稿</el-radio>
           <el-radio :label="1">待审核</el-radio>
           <el-radio :label="2">审核通过</el-radio>
@@ -19,15 +19,18 @@
       </el-form-item>
       <!-- select选择框,频道选择 -->
       <el-form-item label="频道类型：">
-        <el-select v-model="FromData.channel_id" placeholder="请选择频道">
+        <el-select v-model="FromData.channel_id" @change="changeCondition" placeholder="请选择频道">
           <el-option v-for="item in channels" :label="item.name" :value="item.id" :key="item.id"></el-option>
         </el-select>
       </el-form-item>
       <!-- 日期范围 -->
       <el-form-item label="日期范围：">
+        <!-- <span>{{FromData.dataRange}}</span> -->
         <el-date-picker
           v-model="FromData.dataRange"
+          @change="changeCondition"
           type="daterange"
+          value-format="yyyy-MM-dd"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
@@ -37,13 +40,16 @@
 
     <!-- 页面主体结构 -->
     <el-card class="body">
-      <el-row align="middle">共找到<span class="total-num">{{page.total_count}}</span>条符合条件的内容</el-row>
+      <el-row align="middle">
+        共找到
+        <span class="total-num">{{page.total_count}}</span>条符合条件的内容
+      </el-row>
       <el-divider>
         <i class="el-icon-caret-bottom"></i>
       </el-divider>
       <div class="article-item" v-for="item in list" v-bind:key="item.id.toString()">
         <div class="left">
-          <img :src="item.cover.images.length?item.cover.images[0]:defaultImg">
+          <img :src="item.cover.images.length?item.cover.images[0]:defaultImg" />
           <div class="info">
             <span>{{item.title}}</span>
             <el-tag class="tag" :type="item.status | filterType">{{item.status | filterStatus}}</el-tag>
@@ -69,15 +75,20 @@ export default {
     return {
       // 定义一个表单数据对象
       FromData: {
-        status: 4, // 状态
+        status: 5, // 状态
         channel_id: null, // 频道
         dataRange: [] // 日期范围
       },
       channels: [], // 用来接收表单第二项频道的值
       list: [], // 用来接收文章信息
-      page: {}, // 用来存放文章的页码信息,eg:一共有多少文章,第几页
       //   defaultImg: require('http://b-ssl.duitang.com/uploads/item/201509/26/20150926000727_aWhtR.thumb.224_0.jpeg')
-      defaultImg: require('../../assets/img/article_default_Img.gif')
+      defaultImg: require('../../assets/img/article_default_Img.gif'),
+      page: {
+        total_count: 0, // 表示一共有多少条数据,
+        page: 1, // 表示当前页码
+        per_page: 1// 表示一页多少条数据
+      } // 用来存放文章的页码信息,eg:一共有多少文章,第几页
+
     }
   },
   filters: {
@@ -120,14 +131,26 @@ export default {
       })
     },
     // 此方法用来获取文章信息
-    getArticles () {
+    getArticles (params) {
       this.$axios({
-        url: '/articles'
+        url: '/articles',
+        params: params
       }).then((res) => {
         console.log(res)
         this.list = res.data.results
         this.page = res.data
       })
+    },
+
+    // 此方法用来监听表单筛选条件的改变
+    changeCondition () {
+      const params = {
+        status: this.FromData.status === 5 ? null : this.FromData.status,
+        channel_id: this.FromData.channel_id,
+        begin_pubdate: this.FromData.dataRange.length ? this.FromData.dataRange[0] : null,
+        end_pubdate: this.FromData.dataRange.length > 1 ? this.FromData.dataRange[1] : null
+      }
+      this.getArticles(params)
     }
   },
   created () {
@@ -146,8 +169,8 @@ export default {
     i {
       font-size: 30px;
     }
-    .total-num{
-        color:#0000c0
+    .total-num {
+      color: #0000c0;
     }
     .article-item {
       display: flex;
