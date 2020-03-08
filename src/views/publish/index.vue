@@ -31,8 +31,8 @@
           </el-form-item>
           <!-- 两个按钮 -->
           <el-form-item class="btns">
-              <el-button type="primary" @click="publish">发表</el-button>
-              <el-button>存入草稿</el-button>
+              <el-button type="primary" @click="publish(false)">发表</el-button>
+              <el-button @click="publish(true)"> 存入草稿</el-button>
           </el-form-item>
       </el-form>
   </el-card>
@@ -49,7 +49,7 @@ export default {
         content: '', // 文章内容
         cover: {
           type: 0, // 封面类型,-1自动,0无图,1一张,3三张
-          images: ''//
+          images: []//
         },
         channel_id: null// 文章所属频道
       },
@@ -57,7 +57,7 @@ export default {
       FormRules: {
         title: [{ required: true, message: '标题是必填项', trigger: 'blur' }, { min: 5, max: 30, message: '标题的长度在5-30之间', trigger: 'blur' }],
         content: [{ required: true, message: '文章内容不能为空', trigger: 'blur' }],
-        channel_id: [{ require: true, message: '频道类型是必选项', trigger: 'blur' }]
+        channel_id: [{ required: true, message: '频道类型是必选项', trigger: 'blur' }]
       }
     }
   },
@@ -71,26 +71,45 @@ export default {
         this.channels = res.data.channels
       })
     },
-    // // 发表文章
-    // publishArticle () {
-    //   this.$axios({
-    //     url: '/articles',
-
-    //   })
-    // }
-
-    // 此方法用来手动校验规则
-    publish () {
-      this.$refs.MyForm.validate().then(() => {
-        // 手动检验成功后,要进行文章的发表或存入草稿
-        // alert(1)
+    // 获取文章信息
+    getArticles (id) {
+      this.$axios({
+        url: `articles/${id}`
+      }).then(res => {
+        this.FormData = res.data
       }).catch(() => {
-        this.$message.error('文章发表失败')
+        this.$message.error('获取文章信息失败')
+      })
+    },
+
+    // 此方法用来zai手动校验规则hou
+    // 发布正式文章  发布草稿文章    修改正式文章  修改草稿文章
+    publish (darft) {
+      this.$refs.MyForm.validate().then(() => {
+        const { id } = this.$route.query
+        // 表单手动校验成功后,要发请求,进行下面的操作
+        this.$axios({
+          url: id ? `/articles/${id}` : '/articles',
+          method: id ? 'PUT' : 'POST',
+          params: {
+            draft: darft
+          },
+          data: this.FormData
+        }).then(() => {
+          // 请求成功后
+          this.$message.success('操作成功')
+          this.$router.push('/home/articles')
+        }).catch(() => {
+          this.$message.error('操作失败')
+        })
       })
     }
   },
   created () {
     this.getChannels()
+    // 获取从文章列表传过来的id参数
+    const { id } = this.$route.query
+    id && this.getArticles(id)
   }
 
 }

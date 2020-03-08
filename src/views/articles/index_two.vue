@@ -57,7 +57,8 @@
           </div>
         </div>
         <div class="right">
-          <span>
+          <!-- ruery传参 -->
+          <span @click="$router.push(`/home/publish?id=${item.id.toString()}`)">
             <i class="el-icon-edit"></i>编辑
           </span>
           <span @click="delArticles(item.id)">
