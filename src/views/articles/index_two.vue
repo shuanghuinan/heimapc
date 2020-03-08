@@ -1,3 +1,4 @@
+// 实现文章列表的筛选功能和分页功能方法二:用watch监听表单元素的变化
 <template>
   <el-card class="article">
     <!-- 面包屑 -->

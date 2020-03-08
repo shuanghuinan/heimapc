@@ -1,3 +1,4 @@
+// 实现文章列表的筛选功能和分页功能方法二:用表单的catch事件
 <template>
   <el-card class="article">
     <!-- 面包屑 -->
