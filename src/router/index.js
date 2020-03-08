@@ -24,7 +24,9 @@ const routes = [
       { path: '', component: SecondHome },
       { path: 'comment', component: () => import('@/views/comment') }, // 引入评论组件,按需加载
       { path: 'material', component: () => import('@/views/material') }, // 引入素材组件,按需加载
-      { path: 'articles', component: () => import('@/views/articles') } // 引入文章(内容)组件,按需加载
+      // { path: 'articles', component: () => import('@/views/articles') } // 引入文章(内容)组件,按需加载
+      { path: 'articles', component: () => import('@/views/articles/index_two') } // 引入文章(内容)组件,按需加载
+
     ]
   }
 
