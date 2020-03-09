@@ -12,11 +12,11 @@
           </el-form-item>
           <!-- 文本域 -->
           <el-form-item label="内容：" prop="content">
-              <el-input type="textarea" placeholder="请输入内容" style="width:80%" rows="5" v-model="FormData.content"></el-input>
+              <quill-editor class="MyEditor" v-model="FormData.content"></quill-editor>
           </el-form-item>
           <!-- 单选按钮组 -->
-          <el-form-item label="封面：" prop="cover">
-              <el-radio-group v-model="FormData.cover.type">
+          <el-form-item  label="封面：" prop="cover" class="MyCover">
+              <el-radio-group v-model="FormData.cover.type" >
                   <el-radio :label="1">单图</el-radio>
                   <el-radio :label="3">三图</el-radio>
                   <el-radio :label="0">无图</el-radio>
@@ -118,6 +118,15 @@ export default {
 <style lang='less' scoped>
 .MyForm{
     padding-left: 50px;
+    .MyEditor{
+      margin: 10px 65px;
+      width: 70%;
+      height: 300px;
+    }
+    .MyCover{
+      margin-top: 100px;
+      margin-left: 10px;
+    }
     .btns{
         margin-left: 55px;
     }

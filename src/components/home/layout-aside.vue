@@ -8,9 +8,9 @@
     <!-- 导航部分 -->
     <el-menu router background-color='#16245C' text-color='#A39F93'>
         <!-- 一 -->
-        <el-menu-item>
+        <el-menu-item  index='/home'>
             <i class="el-icon-s-home"></i>
-            <span slot="title" index='/home'>首页</span>
+            <span slot="title">首页</span>
         </el-menu-item>
         <!-- 二 -->
         <!-- 为两个el-submenu设置了不同的index值后,就不会再出现点这个的时候,两个都展开的情况 -->
