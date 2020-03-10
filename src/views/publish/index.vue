@@ -23,8 +23,8 @@
                   <el-radio :label="-1">自动</el-radio>
               </el-radio-group>
           </el-form-item>
-          <!-- 放置图片封面组件 -->
-          <image-cover v-bind:list='FormData.cover.images'></image-cover>
+          <!-- 放置图片封面子组件 -->
+          <image-cover v-bind:list='FormData.cover.images' @selectImgTwice='image'></image-cover>
           <!-- 频道选择 -->
           <el-form-item label="频道：" prop="channel_id">
               <el-select placeholder="请选择频道" v-model="FormData.channel_id">
@@ -117,6 +117,11 @@ export default {
       } else {
         this.FormData.cover.images = []
       }
+    },
+
+    // 接收子组件传过来的参数
+    image (url, index) {
+      this.FormData.cover.images.splice(index, 1, url)
     }
   },
   created () {
@@ -144,5 +149,6 @@ export default {
     .btns{
         margin-left: 55px;
     }
+
 }
 </style>
