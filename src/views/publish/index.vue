@@ -1,42 +1,42 @@
 <template>
   <el-card>
-      <!-- 面包屑 -->
-      <bread-crumb slot="header">
-        <template slot="title">发布文章</template>
-      </bread-crumb>
-      <!-- 表单 -->
-      <el-form ref="MyForm" class="MyForm"  v-bind:model="FormData" v-bind:rules="FormRules">
-          <!-- 标题 -->
-          <el-form-item label="标题：" prop="title">
-              <el-input placeholder="请输入您的标题" style="width:60%" v-model="FormData.title"></el-input>
-          </el-form-item>
-          <!-- 文本域 -->
-          <el-form-item label="内容：" prop="content">
-              <quill-editor class="MyEditor" v-model="FormData.content"></quill-editor>
-          </el-form-item>
-          <!-- 单选按钮组 -->
-          <el-form-item  label="封面：" prop="cover" class="MyCover">
-              <el-radio-group v-model="FormData.cover.type" @change="changeType">
-                  <el-radio :label="1">单图</el-radio>
-                  <el-radio :label="3">三图</el-radio>
-                  <el-radio :label="0">无图</el-radio>
-                  <el-radio :label="-1">自动</el-radio>
-              </el-radio-group>
-          </el-form-item>
-          <!-- 放置图片封面子组件 -->
-          <image-cover v-bind:list='FormData.cover.images' @selectImgTwice='image'></image-cover>
-          <!-- 频道选择 -->
-          <el-form-item label="频道：" prop="channel_id">
-              <el-select placeholder="请选择频道" v-model="FormData.channel_id">
-                  <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
-              </el-select>
-          </el-form-item>
-          <!-- 两个按钮 -->
-          <el-form-item class="btns">
-              <el-button type="primary" @click="publish(false)">发表</el-button>
-              <el-button @click="publish(true)"> 存入草稿</el-button>
-          </el-form-item>
-      </el-form>
+    <!-- 面包屑 -->
+    <bread-crumb slot="header">
+      <template slot="title">发布文章</template>
+    </bread-crumb>
+    <!-- 表单 -->
+    <el-form ref="MyForm" class="MyForm" v-bind:model="FormData" v-bind:rules="FormRules">
+      <!-- 标题 -->
+      <el-form-item label="标题：" prop="title">
+        <el-input placeholder="请输入您的标题" style="width:60%" v-model="FormData.title"></el-input>
+      </el-form-item>
+      <!-- 文本域 -->
+      <el-form-item label="内容：" prop="content">
+        <quill-editor class="MyEditor" v-model="FormData.content"></quill-editor>
+      </el-form-item>
+      <!-- 单选按钮组 -->
+      <el-form-item label="封面：" prop="cover" class="MyCover">
+        <el-radio-group v-model="FormData.cover.type" @change="changeType">
+          <el-radio :label="1">单图</el-radio>
+          <el-radio :label="3">三图</el-radio>
+          <el-radio :label="0">无图</el-radio>
+          <el-radio :label="-1">自动</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <!-- 放置图片封面子组件 -->
+      <image-cover v-bind:list="FormData.cover.images" @selectImgTwice="image"></image-cover>
+      <!-- 频道选择 -->
+      <el-form-item label="频道：" prop="channel_id">
+        <el-select placeholder="请选择频道" v-model="FormData.channel_id">
+          <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        </el-select>
+      </el-form-item>
+      <!-- 两个按钮 -->
+      <el-form-item class="btns">
+        <el-button type="primary" @click="publish(false)">发表</el-button>
+        <el-button @click="publish(true)">存入草稿</el-button>
+      </el-form-item>
+    </el-form>
   </el-card>
 </template>
 
@@ -60,6 +60,28 @@ export default {
         title: [{ required: true, message: '标题是必填项', trigger: 'blur' }, { min: 5, max: 30, message: '标题的长度在5-30之间', trigger: 'blur' }],
         content: [{ required: true, message: '文章内容不能为空', trigger: 'blur' }],
         channel_id: [{ required: true, message: '频道类型是必选项', trigger: 'blur' }]
+      }
+    }
+  },
+  watch: {
+    $route: function (to, from) {
+      console.log(to)
+      console.log(from)
+      // 如果to的query参数中有id值,应该获取编辑文章的数据
+      if (to.query.id) {
+        this.getArticles(to.query.id)
+      } else {
+        // 如果不存在 应该 设置表单数据为空
+        // 如果是发布文章 就设置为空对象
+        this.FormData = {
+          title: '', // 文章标题
+          content: '', // 文章内容
+          cover: {
+            type: 0, // 封面类型,-1自动,0无图,1一张,3三张
+            images: []//
+          },
+          channel_id: null// 文章所属频道
+        }
       }
     }
   },
@@ -135,20 +157,19 @@ export default {
 </script>
 
 <style lang='less' scoped>
-.MyForm{
-    padding-left: 50px;
-    .MyEditor{
-      margin: 10px 65px;
-      width: 70%;
-      height: 300px;
-    }
-    .MyCover{
-      margin-top: 100px;
-      margin-left: 10px;
-    }
-    .btns{
-        margin-left: 55px;
-    }
-
+.MyForm {
+  padding-left: 50px;
+  .MyEditor {
+    margin: 10px 65px;
+    width: 70%;
+    height: 300px;
+  }
+  .MyCover {
+    margin-top: 100px;
+    margin-left: 10px;
+  }
+  .btns {
+    margin-left: 55px;
+  }
 }
 </style>
