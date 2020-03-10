@@ -16,13 +16,15 @@
           </el-form-item>
           <!-- 单选按钮组 -->
           <el-form-item  label="封面：" prop="cover" class="MyCover">
-              <el-radio-group v-model="FormData.cover.type" >
+              <el-radio-group v-model="FormData.cover.type" @change="changeType">
                   <el-radio :label="1">单图</el-radio>
                   <el-radio :label="3">三图</el-radio>
                   <el-radio :label="0">无图</el-radio>
                   <el-radio :label="-1">自动</el-radio>
               </el-radio-group>
           </el-form-item>
+          <!-- 放置图片封面组件 -->
+          <image-cover v-bind:list='FormData.cover.images'></image-cover>
           <!-- 频道选择 -->
           <el-form-item label="频道：" prop="channel_id">
               <el-select placeholder="请选择频道" v-model="FormData.channel_id">
@@ -103,6 +105,18 @@ export default {
           this.$message.error('操作失败')
         })
       })
+    },
+
+    // 此方法用来:根据FormData.cover.type的值,来生成对应长度的FormData.cover.images数组
+    // 即根据封面类型,生成对应长度的封面长度.  无图/自动的长度为0  一图的长度是1  三图的长度时3
+    changeType () {
+      if (this.FormData.cover.type === 3) {
+        this.FormData.cover.images = ['', '', '']
+      } else if (this.FormData.cover.type === 1) {
+        this.FormData.cover.images = ['']
+      } else {
+        this.FormData.cover.images = []
+      }
     }
   },
   created () {
