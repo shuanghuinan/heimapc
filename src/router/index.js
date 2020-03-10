@@ -27,7 +27,7 @@ const routes = [
       // { path: 'articles', component: () => import('@/views/articles') } // 引入文章(内容)组件,按需加载
       { path: 'articles', component: () => import('@/views/articles/index_two') }, // 引入文章(内容)组件,按需加载
       { path: 'publish:id?', component: () => import('@/views/publish') }, // 引入文章发表组件(按需加载)
-      { path: 'account', comment: () => import('@/views/account') }
+      { path: 'account', component: () => import('@/views/account') }
     ]
   }
 
