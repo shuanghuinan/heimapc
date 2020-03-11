@@ -41,6 +41,8 @@
 </template>
 
 <script>
+import { getChannels } from '@/api/publish'
+import { getArticles } from '@/api/material'
 export default {
   data () {
     return {
@@ -88,17 +90,13 @@ export default {
   methods: {
     // 获取频道数据
     async getChannels () {
-      const res = await this.$axios({
-        url: '/channels'
-      })
+      const res = await getChannels()
       this.channels = res.data.channels
     },
     // 获取文章信息
     async getArticles (id) {
       try {
-        const res = await this.$axios({
-          url: `articles/${id}`
-        })
+        const res = await getArticles(id)
         this.FormData = res.data
       } catch (error) {
         this.$message.error('获取文章信息失败')
