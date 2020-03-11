@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import eventBus from '@/utils/eventBus'
 export default {
   data () {
     return {
@@ -56,6 +57,19 @@ export default {
         window.localStorage.removeItem('user-token')
         this.$router.push('/login')
       }
+    },
+
+    // 获取个人信息
+    getInfo () {
+      this.$axios({
+        url: '/user/profile'
+      // headers: {
+      //   Authorization: `Bearer ${token}` // 格式要求 Bearer +token
+      // }
+      }).then(res => {
+      // console.log(res)
+        this.userInfo = res.data
+      })
     }
   },
   created () {
@@ -63,14 +77,10 @@ export default {
 
     // 在页面渲染完以后查询头部的个人信息(头像, 名字), 并显示在主页
     // 请求体参数是Bearer+空格+令牌
-    this.$axios({
-      url: '/user/profile'
-      // headers: {
-      //   Authorization: `Bearer ${token}` // 格式要求 Bearer +token
-      // }
-    }).then(res => {
-      // console.log(res)
-      this.userInfo = res.data
+    this.getInfo()
+    // 在页面触发后,开启监听
+    eventBus.$on('changeInfo', () => {
+      this.getInfo()
     })
   }
 }

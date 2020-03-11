@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import eventBus from '@/utils/eventBus'
 export default {
   data () {
     return {
@@ -87,6 +88,7 @@ export default {
         data: fd
       }).then(res => {
         this.info.photo = res.data.photo
+        eventBus.$emit('changeInfo')// 编辑用户头像之后,触发公共实例
         this.$message.success('操作成功')
       }).catch(() => {
         this.$message.error('操作失败')
@@ -103,6 +105,7 @@ export default {
         })
           .then(() => {
             this.$message.success('保存成功')
+            eventBus.$emit('changeInfo')// 手动校验表单后,触发公共实例
           })
           .catch(() => {
             this.$message.error('保存失败')
