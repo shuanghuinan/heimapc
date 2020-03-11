@@ -7,7 +7,7 @@
     <!-- 左面,即第一列 -->
     <el-col class="left" :span="12">
       <!-- 图标 -->
-      <i class="el-icon-s-fold"></i>
+      <i @click="fold=!fold" :class="{'el-icon-s-fold':!fold , 'el-icon-s-unfold': fold}"></i>
       <span>江苏传智播客教育科技股份有限公司</span>
     </el-col>
 
@@ -39,7 +39,14 @@ import eventBus from '@/utils/eventBus'
 export default {
   data () {
     return {
-      userInfo: ''
+      userInfo: '',
+      fold: false // 用来控制导航栏是否折叠,默认不折叠
+    }
+  },
+  watch: {
+    // 监听fold,当fold发生改变时, 触发公共实例
+    fold () {
+      eventBus.$emit('changeFold', this.fold)
     }
   },
   methods: {
@@ -63,11 +70,11 @@ export default {
     getInfo () {
       this.$axios({
         url: '/user/profile'
-      // headers: {
-      //   Authorization: `Bearer ${token}` // 格式要求 Bearer +token
-      // }
+        // headers: {
+        //   Authorization: `Bearer ${token}` // 格式要求 Bearer +token
+        // }
       }).then(res => {
-      // console.log(res)
+        // console.log(res)
         this.userInfo = res.data
       })
     }

@@ -3,10 +3,10 @@
  <div class="layout-aside">
      <!-- 头部logo图片 -->
     <div class="title">
-        <img src="../../assets/img/logo_admin.png" alt="">
+        <img :src="fold?smallImg:bigImg" alt="">
     </div>
     <!-- 导航部分 -->
-    <el-menu router background-color='#16245C' text-color='#A39F93'>
+    <el-menu router :collapse="fold" background-color='#16245C' text-color='#A39F93'>
         <!-- 一 -->
         <el-menu-item  index='/home'>
             <i class="el-icon-s-home"></i>
@@ -46,14 +46,20 @@
 
 <script>
 export default {
-
+  props: ['fold'],
+  data () {
+    return {
+      bigImg: require('../../assets/img/logo_admin.png'),
+      smallImg: require('../../assets/img/toutiao.png')
+    }
+  }
 }
 </script>
 
 <style lang='less' scoped>
     .layout-aside{
         height: 100vh;
-        width: 230px;
+        // width: 230px;
         background-color: #0d1740;
         .title{
             padding:10px 0;
