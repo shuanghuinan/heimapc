@@ -54,7 +54,7 @@ export default {
     clickMenu (command) {
       // 如果点的是info
       if (command === 'info') {
-        //
+        this.$router.push('/home/account')
       } else if (command === 'git') {
         // 如果点的是git,则跳转到github地址
         // alert(11)

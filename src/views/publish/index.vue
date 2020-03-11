@@ -87,45 +87,45 @@ export default {
   },
   methods: {
     // 获取频道数据
-    getChannels () {
-      this.$axios({
+    async getChannels () {
+      const res = await this.$axios({
         url: '/channels'
-      }).then((res) => {
-        // console.log(res)
-        this.channels = res.data.channels
       })
+      this.channels = res.data.channels
     },
     // 获取文章信息
-    getArticles (id) {
-      this.$axios({
-        url: `articles/${id}`
-      }).then(res => {
+    async getArticles (id) {
+      try {
+        const res = await this.$axios({
+          url: `articles/${id}`
+        })
         this.FormData = res.data
-      }).catch(() => {
+      } catch (error) {
         this.$message.error('获取文章信息失败')
-      })
+      }
     },
 
     // 此方法用来zai手动校验规则hou
     // 发布正式文章  发布草稿文章    修改正式文章  修改草稿文章
     publish (darft) {
-      this.$refs.MyForm.validate().then(() => {
+      this.$refs.MyForm.validate().then(async () => {
         const { id } = this.$route.query
         // 表单手动校验成功后,要发请求,进行下面的操作
-        this.$axios({
-          url: id ? `/articles/${id}` : '/articles',
-          method: id ? 'PUT' : 'POST',
-          params: {
-            draft: darft
-          },
-          data: this.FormData
-        }).then(() => {
+        try {
+          await this.$axios({
+            url: id ? `/articles/${id}` : '/articles',
+            method: id ? 'PUT' : 'POST',
+            params: {
+              draft: darft
+            },
+            data: this.FormData
+          })
           // 请求成功后
           this.$message.success('操作成功')
           this.$router.push('/home/articles')
-        }).catch(() => {
+        } catch (error) {
           this.$message.error('操作失败')
-        })
+        }
       })
     },
 
